@@ -37,3 +37,10 @@ LookupError:
 
 Type this to solve:
 python -m nltk.downloader wordnet
+
+pip install pattern
+
+pattern.en.conjugate
+pattern.en.lexeme
+pattern.en.pluralize
+pattern.en.singularize

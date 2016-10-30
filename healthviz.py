@@ -71,7 +71,7 @@ def choosefile(w,fl):
   fname = QFileDialog.getSaveFileName(w, 'Save file')
   filename = fname
   print fname
-  fl.setText(choosefilename)
+  fl.setText(filename)
   #self.le.setPixmap(QPixmap(fname))
  
 

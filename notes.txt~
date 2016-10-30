@@ -1,0 +1,8 @@
+There are two ways to map words to some base/root form: stemming and
+lemmatization. Stemming does not appear to be a good choice as it does not
+take into consideration the context of the use of the word nor does it
+necessarily map words to the real base form of the word (just some sort of
+truncation that serves as a unique key). Therefore, we should go with
+lemmatization which takes into consideration the part of speech of the work
+and maps forms of words to the real base word. Lemmatisation is more
+process-heavy, but this does not really mmatter to us.

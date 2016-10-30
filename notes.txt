@@ -1,0 +1,46 @@
+There are two ways to map words to some base/root form: stemming and
+lemmatization. Stemming does not appear to be a good choice as it does not
+take into consideration the context of the use of the word nor does it
+necessarily map words to the real base form of the word (just some sort of
+truncation that serves as a unique key). Therefore, we should go with
+lemmatization which takes into consideration the part of speech of the work
+and maps forms of words to the real base word. Lemmatisation is more
+process-heavy, but this does not really mmatter to us.
+
+In order to install NLTK:
+pip install -U nltk
+pip install -U numpy
+
+In the case where you get this error:
+>>> wordnet_lemmatizer.lemmatize('dogs')
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+  File "C:\Users\mrroger19\Miniconda3\envs\python27\lib\site-packages\nltk\stem\wordnet.py", line 40, in lemmatize
+    lemmas = wordnet._morphy(word, pos)
+  File "C:\Users\mrroger19\Miniconda3\envs\python27\lib\site-packages\nltk\corpus\util.py", line 99, in __getattr__
+    self.__load()
+  File "C:\Users\mrroger19\Miniconda3\envs\python27\lib\site-packages\nltk\corpus\util.py", line 64, in __load
+    except LookupError: raise e
+LookupError:
+**********************************************************************
+  Resource u'corpora/wordnet' not found.  Please use the NLTK
+  Downloader to obtain the resource:  >>> nltk.download()
+  Searched in:
+    - 'C:\\Users\\mrroger19/nltk_data'
+    - 'C:\\nltk_data'
+    - 'D:\\nltk_data'
+    - 'E:\\nltk_data'
+    - 'C:\\Users\\mrroger19\\Miniconda3\\envs\\python27\\nltk_data'
+    - 'C:\\Users\\mrroger19\\Miniconda3\\envs\\python27\\lib\\nltk_data'
+    - 'C:\\Users\\mrroger19\\AppData\\Roaming\\nltk_data'
+**********************************************************************
+
+Type this to solve:
+python -m nltk.downloader wordnet
+
+pip install pattern
+
+pattern.en.conjugate
+pattern.en.lexeme
+pattern.en.pluralize
+pattern.en.singularize

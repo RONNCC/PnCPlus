@@ -3,7 +3,7 @@ import csv
 from collections import Counter
 from math import log
 #fileName = sys.argv[1]
-fileName = "data/Appointment_util_Campus_Residence.csv"
+fileName = "data/Appointment Report by Department & Visit Type 11.1.16-5.13.16.csv"
 with open(fileName, 'rb') as f:
   csvReader = csv.reader(f)
   for row in csvReader:

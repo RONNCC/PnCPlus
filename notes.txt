@@ -44,3 +44,7 @@ pattern.en.conjugate
 pattern.en.lexeme
 pattern.en.pluralize
 pattern.en.singularize
+
+
+Here is a website that explains how to make an executable from a python scrip:
+https://mborgerson.com/creating-an-executable-from-a-python-script

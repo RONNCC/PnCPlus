@@ -1,3 +1,8 @@
+#This script proccesses the Appointment Report by Department and Visit Type
+#report. It will output a series of grouped bar graphs into the folder "output"
+#that is in the same directory as this program.
+
+
 import matplotlib.pyplot as plt
 import csv
 import sys
@@ -5,14 +10,18 @@ import sys
 # Read the data into a pandas DataFrame.    
 file_name= "data/Appointment Report by Department & Visit Type 11.1.16-5.13.16.csv"
 
+#These are the relevant indices from the report csv
 DEPARTMENT_COLUMN = 0
 VISIT_TYPE_COLUMN = 1
 APPTS_COLUMN = 2
 FIRST_DATA_COLUMN = 3;
 LAST_DATA_COLUMN = 6;
 
+#This dictionary is where the csv's information will be stored
 departments= {}
 
+#This function takes in a row from the csv and inserts that information
+#into the proper place in the departments dictionary
 def add_row(row):
     department= row[DEPARTMENT_COLUMN].strip()
     if(not departments.has_key(department)):
@@ -27,9 +36,10 @@ def add_row(row):
 
 with open(file_name, "rb") as f:
     csvReader = csv.reader(f)
+    #The very first line of the csv is the header
     headers = csvReader.next()
     for row in csvReader:
-        #data is present
+        #check if data is present because some rows do not contain data
         if(row[APPTS_COLUMN] != ""):
             add_row(row)
 
@@ -47,8 +57,11 @@ for i in range(len(tableau20)):
 
 import numpy as np
 import os
+#N is the number of data columns
 N = LAST_DATA_COLUMN - FIRST_DATA_COLUMN + 1
 ind = np.arange(N)
+
+#for every department, make a new bar graph
 for department, rows in departments.iteritems():
     fig, ax = plt.subplots(figsize=(20,10))
     subplots = []

@@ -14,8 +14,6 @@ file_name= "data/Appointment Report by Department & Visit Type 11.1.16-5.13.16.c
 date_regex = r'[0-9\-\.]*\.csv$'
 date = re.search(date_regex, file_name).group()
 date = date[:len(date)-4]
-print date
-sys.exit()
 #These are the relevant indices from the report csv
 DEPARTMENT_COLUMN = 0
 VISIT_TYPE_COLUMN = 1
@@ -85,10 +83,13 @@ for department, rows in departments.iteritems():
     ax.set_xticklabels(headers[FIRST_DATA_COLUMN:LAST_DATA_COLUMN+1])
     ax.set_title(department + " " + date)
     ax.legend([subplot[0] for subplot in subplots],
-        [visit for visit in visits])
+        [visits[j] + "(" + appts[j] + ")" for j in xrange(len(visits))],
+        bbox_to_anchor=(1.05, 1), 
+        borderaxespad=0.,
+        loc = 2)
     if(not os.path.isdir(os.getcwd() + "/" + output_directory)):
         os.mkdir(output_directory)
-    plt.savefig(output_directory + "/" + department + '.png',
+    plt.savefig(output_directory + "/" + department + " " + date + '.png',
             bbox_inches='tight')
 
 

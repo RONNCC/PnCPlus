@@ -6,10 +6,16 @@
 import matplotlib.pyplot as plt
 import csv
 import sys
-  
+import re
+
 # Read the data into a pandas DataFrame.    
 file_name= "data/Appointment Report by Department & Visit Type 11.1.16-5.13.16.csv"
 
+date_regex = r'[0-9\-\.]*\.csv$'
+date = re.search(date_regex, file_name).group()
+date = date[:len(date)-4]
+print date
+sys.exit()
 #These are the relevant indices from the report csv
 DEPARTMENT_COLUMN = 0
 VISIT_TYPE_COLUMN = 1
@@ -30,8 +36,9 @@ def add_row(row):
     visit_types.append(row[VISIT_TYPE_COLUMN])
     appts.append(row[APPTS_COLUMN])
     #get rid of the percent sign at the end of each number
-    data.append([float(x[0:len(x)-1])
-        for x in row[FIRST_DATA_COLUMN:LAST_DATA_COLUMN + 1]])
+    percentages = [float(x[0:len(x)-1])
+            for x in row[FIRST_DATA_COLUMN:LAST_DATA_COLUMN + 1]] 
+    data.append(percentages)
 
 
 with open(file_name, "rb") as f:
@@ -61,6 +68,7 @@ import os
 N = LAST_DATA_COLUMN - FIRST_DATA_COLUMN + 1
 ind = np.arange(N)
 
+output_directory = "output" + date
 #for every department, make a new bar graph
 for department, rows in departments.iteritems():
     fig, ax = plt.subplots(figsize=(20,10))
@@ -75,11 +83,12 @@ for department, rows in departments.iteritems():
     ax.set_ylabel('percentages')
     ax.set_xticks(ind + width)
     ax.set_xticklabels(headers[FIRST_DATA_COLUMN:LAST_DATA_COLUMN+1])
-    ax.set_title(department)
+    ax.set_title(department + " " + date)
     ax.legend([subplot[0] for subplot in subplots],
         [visit for visit in visits])
-    if(not os.path.isdir(os.getcwd() + "/output")):
-        os.mkdir("output")
-    plt.savefig("output/" + department + '.png', bbox_inches='tight')
+    if(not os.path.isdir(os.getcwd() + "/" + output_directory)):
+        os.mkdir(output_directory)
+    plt.savefig(output_directory + "/" + department + '.png',
+            bbox_inches='tight')
 
 

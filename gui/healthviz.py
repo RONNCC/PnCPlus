@@ -42,73 +42,138 @@
 ##
 #############################################################################
 
-import os
-from PyQt4 import QtGui
-from PyQt4.QtGui import *
+import os, PIL, sys, os.path as osp
+import sip
+sip.setapi('QString', 2)
+sip.setapi('QVariant', 2)
+from PyQt4 import QtCore, QtGui
+# import classwizard_rc
+from tempfile import NamedTemporaryFile
+from os.path import isfile, join, basename
+# from PyQt4 import QtGui
+# from PyQt4.QtCore import *
+# from PyQt4.QtGui import *
+# from resizeimage import resizeimage
+# # import appointment_report_vis as av
+# from PyQt4.QtCore import QObject, pyqtSignal
+# from PyQt4 import QtCore, QtGui
 
+import classwizard_rc
 
-def createIntroPage():
-    page = QtGui.QWizardPage()
-    page.setTitle("Welcome to Healthviz")
+FILE_KINDS = ['csv1','csv2','csv3']
 
-    label = QtGui.QLabel("This app will help you import your data and visualize it")
-    label.setWordWrap(True)
+class ApplicationWizard(QtGui.QWizard):
+    def __init__(self, parent=None):
+        super(ApplicationWizard, self).__init__(parent)
 
-    layout = QtGui.QVBoxLayout()
-    layout.addWidget(label)
-    page.setLayout(layout)
+        self.addPage(IntroPage())
+        self.addPage(RegistrationPage())
+        self.addPage(PageDataTypesPage())
+        self.addPage(createDataPage())
+        self.addPage(createConclusionPage())
 
-    return page
+        self.setPixmap(QtGui.QWizard.BannerPixmap,
+                QtGui.QPixmap(':/images/banner.png'))
+        self.setPixmap(QtGui.QWizard.BackgroundPixmap,
+                QtGui.QPixmap(':/images/background.png'))
+        self.setWindowTitle("Healthviz")
+
+class IntroPage(QtGui.QWizardPage):
+    def __init__(self, parent=None):
+        super(IntroPage, self).__init__(parent)
+        self.setTitle("Welcome to Healthviz")
+        self.setPixmap(QtGui.QWizard.WatermarkPixmap,
+                QtGui.QPixmap(':/images/watermark1.png'))
+
+        label = QtGui.QLabel("This app will help you import your data and visualize it")
+        label.setWordWrap(True)
+
+        layout = QtGui.QVBoxLayout()
+        layout.addWidget(label)
+        self.setLayout(layout)
 
 def getfile(w,fl):
-  fname = QFileDialog.getOpenFileName(w, 'Open file')
+  fname = QtGui.QFileDialog.getOpenFileName(w, 'Open file')
   filename = fname
-  print fname
   fl.setText(filename)
   #self.le.setPixmap(QPixmap(fname))
     
 def choosefile(w,fl):
-  fname = QFileDialog.getSaveFileName(w, 'Save file')
-  filename = fname
-  print fname
-  fl.setText(filename)
+  fname = QtGui.QFileDialog.getExistingDirectory(w, 'Select Directory')
+  fl.setText(fname)
+
   #self.le.setPixmap(QPixmap(fname))
- 
 
-def createRegistrationPage():
-    page = QtGui.QWizardPage()
-    page.setTitle("Data Import")
-    #page.setSubTitle("Please fill both fields.")
+def output_func_wrapper(w, fl):
+    choosefile(w, fl)
 
-    nameLabel = QtGui.QLabel("CSV File to Import:")
-    btn = QPushButton("Select File")
-    fileLabel = QtGui.QLabel("")
-    btn.clicked.connect(lambda: getfile(page, fileLabel))
+class RegistrationPage(QtGui.QWizardPage):
+    def __init__(self, parent=None):
+        super(RegistrationPage, self).__init__(parent)
+        self.setTitle("Data Import")
+        #self.setSubTitle("Please fill both fields.")
 
-    nameLabel2 = QtGui.QLabel("Output File:")
-    btn2 = QPushButton("Select File")
-    fileLabel2 = QtGui.QLabel("")
-    btn2.clicked.connect(lambda: choosefile(page, fileLabel2))
+        nameLabel = QtGui.QLabel("&CSV Input Directory")
+        btn = QtGui.QPushButton("Select Directory")
+        fileLabel = QtGui.QLineEdit("")
+        nameLabel.setBuddy(fileLabel)
+        btn.clicked.connect(lambda: choosefile(self, fileLabel))
+
+        nameLabel2 = QtGui.QLabel("&Output Directory:")
+        btn2 = QtGui.QPushButton("Select Directory")
+        fileLabel2 = QtGui.QLineEdit("")
+        nameLabel2.setBuddy(fileLabel2)
+        btn2.clicked.connect(lambda: output_func_wrapper(self,fileLabel2))
+
+        #emailLabel = QtGui.QLabel("Email address:")
+        #emailLineEdit = QtGui.QLineEdit()
+
+        layout = QtGui.QGridLayout()
+        layout.addWidget(btn, 0, 0)
+
+        layout.addWidget(nameLabel, 1, 0)
+        layout.addWidget(fileLabel, 1, 1)
+        layout.addWidget(QtGui.QLabel(""), 2,0)
+        layout.addWidget(QtGui.QLabel(""), 3,0)
+        layout.addWidget(btn2, 4,0)
+        layout.addWidget(nameLabel2, 5, 0)
+        layout.addWidget(fileLabel2, 5, 1)
+
+        self.registerField("input_dir*", fileLabel)
+        self.registerField("output_dir*", fileLabel2)
+        # layout.addWidget(emailLineEdit, 1, 1)
+        self.setLayout(layout)
+
+class PageDataTypesPage(QtGui.QWizardPage):
+    def __init__(self, parent=None):
+        super(PageDataTypesPage, self).__init__(parent)
+        self.setTitle("Types")
+
+        label = QtGui.QLabel("Please choose types below")
+        label.setWordWrap(True)
+
+        layout = QtGui.QGridLayout()
+        layout.addWidget(label,0,0)
+
+        if self.field('input_dir'):
+            print 'yolo', self.field('input_dir')
+
+        self.setLayout(layout)
 
 
-
-    #emailLabel = QtGui.QLabel("Email address:")
-    #emailLineEdit = QtGui.QLineEdit()
-
-    layout = QtGui.QGridLayout()
-    layout.addWidget(btn, 0, 0)
-
-    layout.addWidget(nameLabel, 1, 0)
-    layout.addWidget(fileLabel, 1, 1)
-
-    layout.addWidget(btn2, 2,0)
-    layout.addWidget(nameLabel2, 3, 0)
-    layout.addWidget(fileLabel2, 3, 1)
-
-    # layout.addWidget(emailLineEdit, 1, 1)
-    page.setLayout(layout)
-
-    return page
+    def initializePage(self):
+        layout = self.layout()
+        input_dir = self.field('input_dir')
+        print 'CN',input_dir
+        outfiles = [join(input_dir, f) for f in os.listdir(input_dir) if isfile(join(input_dir, f))]
+        print outfiles
+        for ind,item in enumerate(outfiles):
+            filenametag = QtGui.QLabel(basename(item))
+            fileKind = QtGui.QComboBox()
+            for kind in FILE_KINDS:
+                fileKind.addItem(kind)
+            layout.addWidget(filenametag, ind+1,0)
+            layout.addWidget(fileKind,ind+1,1)
 
 def createDataPage():
     page = QtGui.QWizardPage()
@@ -120,16 +185,36 @@ def createDataPage():
     layout = QtGui.QGridLayout()
     layout.addWidget(label,0,0)
 
+    def process_io_directories(io_list):
+        print 'IOLIST: ', io_list
+
+    #     # fnmap=[]
+    #     # for fn in outfiles:
+    #     #     print fn
+    #     #     #with open(fn, 'r+b') as f:
+    #     #     with PIL.Image.open(fn).load() as image:
+    #     #         cover = resizeimage.resize_cover(image, [300, 200])
+    #     #         tfn = NamedTemporaryFile()
+    #     #         cover.save(tfn.name, image.format)
+    #     #         fnmap.append((fn, tfn.name))
+    #     # print fnmap
+
+    #     pyfile_location = os.path.dirname(os.path.realpath(__file__))
+    #     images_loc= outputdir.text()
+    #     print 'IMAGESLOC', images_loc
+
+    outfiles = ['cmap1.jpg','cmap2.png']    
+        
     l1 = QtGui.QLabel("-")
-    pixmap = QtGui.QPixmap(os.getcwd() + '/cmap2.png')
-    print os.getcwd() + '/cmap2.png'
+    # pixmap = QtGui.QPixmap(fnmap[0][1])
+    pixmap = QtGui.QPixmap(outfiles[0])
     l1.setPixmap(pixmap)
     layout.addWidget(l1,1,1)
 
 
     l2 = QtGui.QLabel("-")
-    pixmap = QtGui.QPixmap(os.getcwd() + '/cmap2.png')
-    print os.getcwd() + '/cmap1.png'
+    # pixmap = QtGui.QPixmap(fnmap[1][1])
+    pixmap = QtGui.QPixmap(outfiles[1])
     l2.setPixmap(pixmap)
     layout.addWidget(l2,1,0)
 
@@ -153,22 +238,15 @@ def createConclusionPage():
     return page
 
 
+
 if __name__ == '__main__':
 
     import sys
-
     app = QtGui.QApplication(sys.argv)
-
-    wizard = QtGui.QWizard()
-    wizard.addPage(createIntroPage())
-    wizard.addPage(createRegistrationPage())
-    wizard.addPage(createDataPage())
-    wizard.addPage(createConclusionPage())
-
-    wizard.setWindowTitle("Trivial Wizard")
+    # QtGui.QApplication.setStyle("GTK+")
+    wizard = ApplicationWizard() 
     wizard.show()
-
-    sys.exit(wizard.exec_())
+    sys.exit(app.exec_())
 
 
 """

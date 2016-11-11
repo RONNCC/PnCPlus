@@ -89,7 +89,7 @@ for department, rows in departments.iteritems():
         loc = 2)
     if(not os.path.isdir(os.getcwd() + "/" + output_directory)):
         os.mkdir(output_directory)
-    plt.savefig(output_directory + "/" + department + " " + date + '.png',
+    plt.savefig(output_directory + "/" + department + " " + date + '.eps',
             bbox_inches='tight')
 
 

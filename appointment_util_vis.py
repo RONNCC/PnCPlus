@@ -8,7 +8,7 @@ date_regex = r'[0-9\-\.]*\.csv$'
 date = re.search(date_regex, file_name).group()
 #remove file ending
 date = date[:len(date)-4]
-
+output_directory = "output" + date 
 RESIDENCE = 0
 APPTS = 1
 APPTS_PERC = 2
@@ -37,13 +37,9 @@ for i in xrange(len(tableau20)):
     r, g, b = tableau20[i]    
     tableau20[i] = (r / 255., g / 255., b / 255.)
 
-#Make the pie a circle, not an ellipse
-plt.axis("equal")
-
-fig = plt.figure()
-ax = fig.gca()
-
 for i in xrange(1, len(headers), 2):
+    fig = plt.figure()
+    ax = fig.gca()
     header = headers[i]
     percentages = []
     labels=[]
@@ -57,5 +53,8 @@ for i in xrange(1, len(headers), 2):
     
     ax.pie(counts, labels=labels, colors=tableau20[:len(percentages)],
             autopct='%1.1f%%', startangle=90)
+    #Make the pie a circle, not an ellipse
+    plt.axis("equal")
+    plt.savefig(output_directory + "/" + header+ " " +
+            date + '.eps', bbox_inches='tight')
 
-plt.show()

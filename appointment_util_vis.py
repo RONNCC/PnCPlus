@@ -41,6 +41,7 @@ for i in xrange(1, len(headers), 2):
     fig = plt.figure()
     ax = fig.gca()
     header = headers[i]
+    plt.title(header)
     percentages = []
     labels=[]
     counts = []

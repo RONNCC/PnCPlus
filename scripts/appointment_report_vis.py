@@ -9,7 +9,7 @@ import sys
 import re
 
 # Read the data into a pandas DataFrame.    
-file_name= "data/Appointment Report by Department & Visit Type 11.1.16-5.13.16.csv"
+file_name= "../data/Appointment Report by Department & Visit Type 11.1.16-5.13.16.csv"
 
 date_regex = r'[0-9\-\.]*\.csv$'
 date = re.search(date_regex, file_name).group()
@@ -66,7 +66,10 @@ import os
 N = LAST_DATA_COLUMN - FIRST_DATA_COLUMN + 1
 ind = np.arange(N)
 
-output_directory = "output" + date
+output_directory = "../output" + date
+if(not os.path.isdir(os.getcwd() + "/" + output_directory)):
+    os.mkdir(output_directory)
+
 #for every department, make a new bar graph
 for department, rows in departments.iteritems():
     fig, ax = plt.subplots(figsize=(20,10))
@@ -87,8 +90,6 @@ for department, rows in departments.iteritems():
         bbox_to_anchor=(1.05, 1), 
         borderaxespad=0.,
         loc = 2)
-    if(not os.path.isdir(os.getcwd() + "/" + output_directory)):
-        os.mkdir(output_directory)
     plt.savefig(output_directory + "/" + department + " " + date + '.eps',
             bbox_inches='tight')
 

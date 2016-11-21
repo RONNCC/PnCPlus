@@ -42,26 +42,29 @@
 ##
 #############################################################################
 
-import os, PIL, sys, os.path as osp,copy
+import os, sys, os.path as osp,copy
 import sip
 sip.setapi('QString', 2)
 sip.setapi('QVariant', 2)
 from PyQt4 import QtCore, QtGui
-# import classwizard_rc
-from tempfile import NamedTemporaryFile
 from os.path import isfile, join, basename
-# from PyQt4 import QtGui
-# from PyQt4.QtCore import *
-# from PyQt4.QtGui import *
-# from resizeimage import resizeimage
-# # import appointment_report_vis as av
-# from PyQt4.QtCore import QObject, pyqtSignal
-# from PyQt4 import QtCore, QtGui
-
 import classwizard_rc
 
-FILE_KINDS = ['csv1','csv2','csv3']
+FILE_KINDS = ['Appointment Report','Appointment Util','Intl Status/Orig',
+             'Total Distinct Patients','UHS Exam Room Vis']
 
+def getReportToCall(reportType):
+    if reportType == 'Appointment Report':
+        return 'appointment_report_vis.py'
+    if reportType == 'Appointment Util':
+        return 'appointment_util_vis.py'
+    if reportType == 'Intl Status/Orig':
+        return 'ctry_orig.py'
+    if reportType == 'Total Distinct Patients':
+        return 'total_distinct_patients_vis.py'
+    if reportType == 'UHS Exam Room Vis':
+        return 'uhs_vis.py'
+    return None
 class ApplicationWizard(QtGui.QWizard):
     def __init__(self, parent=None):
         super(ApplicationWizard, self).__init__(parent)
@@ -217,7 +220,14 @@ class DataPage(QtGui.QWizardPage):
         in_files = [join(in_files, f) for f in in_files if isfile(f)]
         in_files_type = list(RegistrationPage.in_files_type.values())
         in_files_w_type = zip(in_files,in_files_type)
-        
+        # for file,filetype in in_files_w_type:
+        #     scriptToCall = getReportToCall(filetype)
+        #     if scriptToCall == None:
+        #         msg = QMessageBox()
+        #         msg.setIcon(QMessageBox.Critical)
+        #         msg.setText("COULDNT FIND SCRIPT FOR REPORT TYPE: {}".format(filetype))
+        #         msg.setWindowTitle("HEALTHVIZ ERROR")
+        #     os.system('python ../scripts/')
 
 def createConclusionPage():
     page = QtGui.QWizardPage()
@@ -242,68 +252,3 @@ if __name__ == '__main__':
     wizard = ApplicationWizard() 
     wizard.show()
     sys.exit(app.exec_())
-
-
-"""
-import sys
-from PyQt4.QtCore import pyqtSlot
-from PyQt4.QtGui import *
-from PyQt4 import QtGui
- 
-__author__ = 'pythonspot.com'
-
-# create our window
-app = QApplication(sys.argv)
-w = QMainWindow()
-
-
-# Create main menu
-mainMenu = w.menuBar()
-mainMenu.setNativeMenuBar(False)
-fileMenu = mainMenu.addMenu('File')
- 
-# Add exit button
-exitButton = QAction(QIcon('exit24.png'), 'Exit', w)
-exitButton.setShortcut('Ctrl+Q')
-exitButton.setStatusTip('Exit application')
-exitButton.triggered.connect(w.close)
-fileMenu.addAction(exitButton)
-
-
-
-tabs	= QtGui.QTabWidget()
-
-# Create tabs
-tab1	= QtGui.QWidget()	
-tab2	= QtGui.QWidget()
-tab3	= QtGui.QWidget()
-tab4	= QtGui.QWidget()
-
-# Resize width and height
-tabs.resize(250, 150)
-
-# Set layout of first tab
-vBoxlayout	= QtGui.QVBoxLayout()
-pushButton1 = QtGui.QPushButton("Start")
-pushButton2 = QtGui.QPushButton("Settings")
-pushButton3 = QtGui.QPushButton("Stop")
-vBoxlayout.addWidget(pushButton1)
-vBoxlayout.addWidget(pushButton2)
-vBoxlayout.addWidget(pushButton3)
-tab1.setLayout(vBoxlayout)   
-
-# Add tabs
-tabs.addTab(tab1,"Tab 1")
-tabs.addTab(tab2,"Tab 2")
-tabs.addTab(tab3,"Tab 3")
-tabs.addTab(tab4,"Tab 4") 
-
-# Set title and show
-tabs.setWindowTitle('HealthVizMenu')
-tabs.show()
-
-
-# Show the window and run the app
-w.show()
-app.exec_()
-"""

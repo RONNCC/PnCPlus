@@ -195,23 +195,6 @@ class DataPage(QtGui.QWizardPage):
         label.setWordWrap(True)
         layout.addWidget(label)
 
-        # layout.addWidget(label,0,0)
-
-        # outfiles = ['cmap1.jpg','cmap2.png']    
-            
-        # l1 = QtGui.QLabel("-")
-        # # pixmap = QtGui.QPixmap(fnmap[0][1])
-        # pixmap = QtGui.QPixmap(outfiles[0])
-        # l1.setPixmap(pixmap)
-        # layout.addWidget(l1,1,1)
-
-
-        # l2 = QtGui.QLabel("-")
-        # # pixmap = QtGui.QPixmap(fnmap[1][1])
-        # pixmap = QtGui.QPixmap(outfiles[1])
-        # l2.setPixmap(pixmap)
-        # layout.addWidget(l2,1,0)
-
         page.setLayout(layout)
         return None
 
@@ -220,14 +203,16 @@ class DataPage(QtGui.QWizardPage):
         in_files = [join(in_files, f) for f in in_files if isfile(f)]
         in_files_type = list(RegistrationPage.in_files_type.values())
         in_files_w_type = zip(in_files,in_files_type)
-        # for file,filetype in in_files_w_type:
-        #     scriptToCall = getReportToCall(filetype)
-        #     if scriptToCall == None:
-        #         msg = QMessageBox()
-        #         msg.setIcon(QMessageBox.Critical)
-        #         msg.setText("COULDNT FIND SCRIPT FOR REPORT TYPE: {}".format(filetype))
-        #         msg.setWindowTitle("HEALTHVIZ ERROR")
-        #     os.system('python ../scripts/')
+        for file,filetype in in_files_w_type:
+            scriptToCall = getReportToCall(filetype)
+            if scriptToCall == None:
+                msg = QMessageBox()
+                msg.setIcon(QMessageBox.Critical)
+                msg.setText("COULDNT FIND SCRIPT FOR REPORT TYPE: {}".format(filetype))
+                msg.setWindowTitle("HEALTHVIZ ERROR")
+            STRING_TO_RUN = 'python ../scripts/{} {}'.format(scriptToCall,file)
+            print STRING_TO_RUN
+            os.system(STRING_TO_RUN)
 
 def createConclusionPage():
     page = QtGui.QWizardPage()

@@ -6,10 +6,9 @@ import sys
 # example file_name:  "Total Distinct Patients 8.19.13-8.18.14.csv"
 file_name = sys.argv[1]
 title = file_name[:len(file_name)-4]
-path = "../data/" + file_name
 
 date_regex = r'[0-9\-\.]*\.csv$'
-date = re.search(date_regex, path).group()
+date = re.search(date_regex, file_name).group()
 #remove file ending
 date = date[:len(date)-4]
 import os

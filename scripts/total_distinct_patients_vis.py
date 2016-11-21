@@ -49,10 +49,13 @@ for j in xrange(len(data)):
     labels.append(row[ACADEMIC_LEVEL] + "(" + row[PATIENT_COUNT] + ")")
     counts.append(row[PATIENT_COUNT])
 
-ax.pie(counts, labels=labels, colors=tableau20[:len(counts)],
-        autopct='%1.1f%%', startangle=90)
-#Make the pie a circle, not an ellipse
-plt.axis("equal")
+import numpy as np
+y_pos = np.arange(len(labels)) + 0.5
+
+ax.barh(y_pos, counts, align='center', color=tableau20[1])
+plt.yticks(y_pos, labels)
+plt.xlabel("number of distinct patients")
+
 plt.savefig(output_directory + "/" + title+ " " +
         date + '.eps', bbox_inches='tight')
 

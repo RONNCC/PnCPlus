@@ -1,8 +1,10 @@
 import matplotlib.pyplot as plt
 import csv
 import re
+import sys
 
-file_name = "../data/Appointment Utilization by Campus Residence.csv"
+#example file_name: "../data/Appointment Utilization by Campus Residence.csv"
+file_name = sys.argv[1]
 
 date_regex = r'[0-9\-\.]*\.csv$'
 date = re.search(date_regex, file_name).group()

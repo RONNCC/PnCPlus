@@ -8,8 +8,8 @@ import csv
 import sys
 import re
 
-# Read the data into a pandas DataFrame.    
-file_name= "../data/Appointment Report by Department & Visit Type 11.1.16-5.13.16.csv"
+#example file_name: "../data/Appointment Report by Department & Visit Type 11.1.16-5.13.16.csv"
+file_name= sys.argv[1]
 
 date_regex = r'[0-9\-\.]*\.csv$'
 date = re.search(date_regex, file_name).group()

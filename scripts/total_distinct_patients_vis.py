@@ -1,8 +1,10 @@
 import matplotlib.pyplot as plt
 import csv
 import re
+import sys
 
-file_name = "Total Distinct Patients 8.19.13-8.18.14.csv"
+# example file_name:  "Total Distinct Patients 8.19.13-8.18.14.csv"
+file_name = sys.argv[1]
 title = file_name[:len(file_name)-4]
 path = "../data/" + file_name
 

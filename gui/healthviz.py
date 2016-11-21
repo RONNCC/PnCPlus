@@ -42,7 +42,7 @@
 ##
 #############################################################################
 
-import os, PIL, sys, os.path as osp
+import os, PIL, sys, os.path as osp,copy
 import sip
 sip.setapi('QString', 2)
 sip.setapi('QVariant', 2)
@@ -68,8 +68,8 @@ class ApplicationWizard(QtGui.QWizard):
 
         self.addPage(IntroPage())
         self.addPage(RegistrationPage())
-        self.addPage(PageDataTypesPage())
-        self.addPage(createDataPage())
+        # self.addPage(PageDataTypesPage())
+        self.addPage(DataPage())
         self.addPage(createConclusionPage())
 
         self.setPixmap(QtGui.QWizard.BannerPixmap,
@@ -92,137 +92,132 @@ class IntroPage(QtGui.QWizardPage):
         layout.addWidget(label)
         self.setLayout(layout)
 
-def getfile(w,fl):
+def getfile(w,fl,rownum):
   fname = QtGui.QFileDialog.getOpenFileName(w, 'Open file')
   filename = fname
   fl.setText(filename)
+  RegistrationPage.in_files[rownum]=filename
   #self.le.setPixmap(QPixmap(fname))
     
 def choosefile(w,fl):
   fname = QtGui.QFileDialog.getExistingDirectory(w, 'Select Directory')
   fl.setText(fname)
 
-  #self.le.setPixmap(QPixmap(fname))
-
-def output_func_wrapper(w, fl):
-    choosefile(w, fl)
+def setReportType(w,fk,thisrownum):
+  RegistrationPage.in_files_type[thisrownum] = fk.currentText()
 
 class RegistrationPage(QtGui.QWizardPage):
+    num_in_rows=0
+    in_files = {}
+    in_files_type = {}
+    # def in_files_get():
+    #     return __input_files
+
+    # def in_files_set(val):
+    #     __input_files = val
+
+    # input_files_list = QtCore.pyqtProperty(list, in_files_get, in_files_set)
+    def __add_another_row(self,layout):
+        k = self.__make_file_choose_row(layout,RegistrationPage.num_in_rows)
+        layout.addLayout(k)
+        RegistrationPage.num_in_rows+=1
+
+    def __make_file_choose_row(self,layout,rownum):
+        thisrownum = copy.copy(rownum)
+        btn = QtGui.QPushButton("Select File")
+        btn2 = QtGui.QPushButton("+")
+        fileLabel = QtGui.QLineEdit("")
+        btn.clicked.connect(lambda: getfile(self, fileLabel,thisrownum))    
+        btn2.clicked.connect(lambda: self.__add_another_row(layout))
+        fileKind = QtGui.QComboBox()
+        for kind in FILE_KINDS:
+            fileKind.addItem(kind)
+        fileKind.currentIndexChanged.connect(lambda: setReportType(self,fileKind,thisrownum))
+        selectHBox = QtGui.QHBoxLayout()
+        selectHBox.addWidget(btn)
+        selectHBox.addWidget(fileLabel)
+        selectHBox.addWidget(fileKind)
+        selectHBox.addWidget(btn2)
+        return selectHBox   
+
     def __init__(self, parent=None):
         super(RegistrationPage, self).__init__(parent)
+        self.registerField("input_files",self,"input_files_list")
         self.setTitle("Data Import")
+
         #self.setSubTitle("Please fill both fields.")
+        tophbox = QtGui.QVBoxLayout()
+        botvbox = QtGui.QVBoxLayout()
+        mainvbox = QtGui.QVBoxLayout()
 
-        nameLabel = QtGui.QLabel("&CSV Input Directory")
-        btn = QtGui.QPushButton("Select Directory")
-        fileLabel = QtGui.QLineEdit("")
-        nameLabel.setBuddy(fileLabel)
-        btn.clicked.connect(lambda: choosefile(self, fileLabel))
 
+
+        """ TOP DYNAMIC ADD HALF """
+        tophbox.addWidget(QtGui.QLabel("CSV Inputs"))
+        tophbox.addLayout(self.__make_file_choose_row(tophbox,RegistrationPage.num_in_rows))
+        RegistrationPage.num_in_rows+=1
+
+        """ BOTTOM HALF """
         nameLabel2 = QtGui.QLabel("&Output Directory:")
         btn2 = QtGui.QPushButton("Select Directory")
         fileLabel2 = QtGui.QLineEdit("")
         nameLabel2.setBuddy(fileLabel2)
-        btn2.clicked.connect(lambda: output_func_wrapper(self,fileLabel2))
+        btn2.clicked.connect(lambda: choosefile(self,fileLabel2))
+        outputVbox = QtGui.QVBoxLayout()
+        outputVbox.addWidget(nameLabel2)
+        outputHbox = QtGui.QHBoxLayout()
+        outputHbox.addWidget(btn2)
+        outputHbox.addWidget(fileLabel2)
+        botvbox.addWidget(nameLabel2)
+        botvbox.addLayout(outputHbox)
 
-        #emailLabel = QtGui.QLabel("Email address:")
-        #emailLineEdit = QtGui.QLineEdit()
 
-        layout = QtGui.QGridLayout()
-        layout.addWidget(btn, 0, 0)
+        mainvbox.addLayout(tophbox)
+        mainvbox.addStretch(1)
+        mainvbox.addLayout(botvbox)
 
-        layout.addWidget(nameLabel, 1, 0)
-        layout.addWidget(fileLabel, 1, 1)
-        layout.addWidget(QtGui.QLabel(""), 2,0)
-        layout.addWidget(QtGui.QLabel(""), 3,0)
-        layout.addWidget(btn2, 4,0)
-        layout.addWidget(nameLabel2, 5, 0)
-        layout.addWidget(fileLabel2, 5, 1)
-
-        self.registerField("input_dir*", fileLabel)
+        # self.registerField("input_dir*", fileLabel)
         self.registerField("output_dir*", fileLabel2)
         # layout.addWidget(emailLineEdit, 1, 1)
-        self.setLayout(layout)
+        self.setLayout(mainvbox)
 
-class PageDataTypesPage(QtGui.QWizardPage):
+
+class DataPage(QtGui.QWizardPage):
     def __init__(self, parent=None):
-        super(PageDataTypesPage, self).__init__(parent)
-        self.setTitle("Types")
-
-        label = QtGui.QLabel("Please choose types below")
-        label.setWordWrap(True)
-
+        super(DataPage, self).__init__(parent)
+        page = QtGui.QWizardPage()
+        page.setTitle("Data")
         layout = QtGui.QGridLayout()
-        layout.addWidget(label,0,0)
+        label = QtGui.QLabel("Output should now be generated")
+        label.setWordWrap(True)
+        layout.addWidget(label)
 
-        if self.field('input_dir'):
-            print 'yolo', self.field('input_dir')
+        # layout.addWidget(label,0,0)
 
-        self.setLayout(layout)
+        # outfiles = ['cmap1.jpg','cmap2.png']    
+            
+        # l1 = QtGui.QLabel("-")
+        # # pixmap = QtGui.QPixmap(fnmap[0][1])
+        # pixmap = QtGui.QPixmap(outfiles[0])
+        # l1.setPixmap(pixmap)
+        # layout.addWidget(l1,1,1)
 
+
+        # l2 = QtGui.QLabel("-")
+        # # pixmap = QtGui.QPixmap(fnmap[1][1])
+        # pixmap = QtGui.QPixmap(outfiles[1])
+        # l2.setPixmap(pixmap)
+        # layout.addWidget(l2,1,0)
+
+        page.setLayout(layout)
+        return None
 
     def initializePage(self):
-        layout = self.layout()
-        input_dir = self.field('input_dir')
-        print 'CN',input_dir
-        outfiles = [join(input_dir, f) for f in os.listdir(input_dir) if isfile(join(input_dir, f))]
-        print outfiles
-        for ind,item in enumerate(outfiles):
-            filenametag = QtGui.QLabel(basename(item))
-            fileKind = QtGui.QComboBox()
-            for kind in FILE_KINDS:
-                fileKind.addItem(kind)
-            layout.addWidget(filenametag, ind+1,0)
-            layout.addWidget(fileKind,ind+1,1)
-
-def createDataPage():
-    page = QtGui.QWizardPage()
-    page.setTitle("Data")
-
-    label = QtGui.QLabel("Please see visualizations below")
-    label.setWordWrap(True)
-
-    layout = QtGui.QGridLayout()
-    layout.addWidget(label,0,0)
-
-    def process_io_directories(io_list):
-        print 'IOLIST: ', io_list
-
-    #     # fnmap=[]
-    #     # for fn in outfiles:
-    #     #     print fn
-    #     #     #with open(fn, 'r+b') as f:
-    #     #     with PIL.Image.open(fn).load() as image:
-    #     #         cover = resizeimage.resize_cover(image, [300, 200])
-    #     #         tfn = NamedTemporaryFile()
-    #     #         cover.save(tfn.name, image.format)
-    #     #         fnmap.append((fn, tfn.name))
-    #     # print fnmap
-
-    #     pyfile_location = os.path.dirname(os.path.realpath(__file__))
-    #     images_loc= outputdir.text()
-    #     print 'IMAGESLOC', images_loc
-
-    outfiles = ['cmap1.jpg','cmap2.png']    
+        in_files = list(RegistrationPage.in_files.values())
+        in_files = [join(in_files, f) for f in in_files if isfile(f)]
+        in_files_type = list(RegistrationPage.in_files_type.values())
+        in_files_w_type = zip(in_files,in_files_type)
         
-    l1 = QtGui.QLabel("-")
-    # pixmap = QtGui.QPixmap(fnmap[0][1])
-    pixmap = QtGui.QPixmap(outfiles[0])
-    l1.setPixmap(pixmap)
-    layout.addWidget(l1,1,1)
-
-
-    l2 = QtGui.QLabel("-")
-    # pixmap = QtGui.QPixmap(fnmap[1][1])
-    pixmap = QtGui.QPixmap(outfiles[1])
-    l2.setPixmap(pixmap)
-    layout.addWidget(l2,1,0)
-
-
-    page.setLayout(layout)
-
-    return page
-
 
 def createConclusionPage():
     page = QtGui.QWizardPage()

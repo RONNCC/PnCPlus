@@ -2,7 +2,8 @@ import matplotlib.pyplot as plt
 import csv
 import re
 
-file_name = "UHS Exam Room Utilization 8.1.14-7.31.15.csv"
+#example file_name: "UHS Exam Room Utilization 8.1.14-7.31.15.csv"
+file_name = sys.argv[1]
 title = file_name[:len(file_name)-4]
 path = "../data/" + file_name
 

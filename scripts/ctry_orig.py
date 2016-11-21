@@ -1,8 +1,10 @@
 import matplotlib.pyplot as plt
 import csv
 import re
+import sys
 
-file_name = "International Status, Country of Origin, and Academic Level.csv"
+#example file_name: "International Status, Country of Origin, and Academic Level.csv"
+file_name = sys.argv[1]
 title = file_name[:len(file_name)-4]
 path = "../data/" + file_name
 
@@ -58,7 +60,6 @@ countries=[]
 counts = []
 
 import numpy as np
-import sys
 for country in international_count:
     count = international_count[country]
     countries.append(country)

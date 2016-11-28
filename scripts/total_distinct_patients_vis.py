@@ -21,7 +21,7 @@ ACADEMIC_LEVEL= 2
 
 data = []
 
-with open(path, "rb") as f:
+with open(file_name, "rb") as f:
     reader = csv.reader(f)
     headers = reader.next()
 
@@ -56,6 +56,8 @@ y_pos = np.arange(len(labels)) + 0.5
 ax.barh(y_pos, counts, align='center', color=tableau20[1])
 plt.yticks(y_pos, labels)
 plt.xlabel("number of distinct patients")
+plt.show()
+sys.exit()
 
 plt.savefig(output_directory + "/" + title+ " " +
         date + '.eps', bbox_inches='tight')

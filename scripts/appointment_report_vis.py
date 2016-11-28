@@ -4,6 +4,7 @@
 
 
 import matplotlib.pyplot as plt
+from matplotlib.gridspec import GridSpec
 import csv
 import sys
 import re
@@ -34,7 +35,7 @@ def add_row(row):
     visit_types.append(row[VISIT_TYPE_COLUMN])
     appts.append(row[APPTS_COLUMN])
     #get rid of the percent sign at the end of each number
-    percentages = [float(x[0:len(x)-1])
+    percentages = [float(x[0:len(x)-1])/100.0
             for x in row[FIRST_DATA_COLUMN:LAST_DATA_COLUMN + 1]] 
     data.append(percentages)
 
@@ -70,27 +71,52 @@ output_directory = "../output" + date
 if(not os.path.isdir(os.getcwd() + "/" + output_directory)):
     os.mkdir(output_directory)
 
+
 #for every department, make a new bar graph
 for department, rows in departments.iteritems():
-    fig, ax = plt.subplots(figsize=(20,10))
-    subplots = []
-    width = 0.05
-    i = 0
+#    fig, ax = plt.subplots(figsize=(20,10))
+#    subplots = []
+#    width = 0.05
+#    i = 0
+#    visits, appts, data = rows
+#    for datum in data:
+#        subplots.append(ax.bar(ind + i * width,
+#            datum, width, color = tableau20[i%len(tableau20)]))
+#        i += 1
+#    ax.set_ylabel('percentages')
+#    ax.set_xticks(ind + width)
+#    ax.set_xticklabels(headers[FIRST_DATA_COLUMN:LAST_DATA_COLUMN+1])
+#    ax.set_title(department + " " + date)
+#    ax.legend([subplot[0] for subplot in subplots],
+#        [visits[j] + "(" + appts[j] + ")" for j in xrange(len(visits))],
+#        bbox_to_anchor=(1.05, 1), 
+#        borderaxespad=0.,
+#        loc = 2)
+#    plt.savefig(output_directory + "/" + department + " " + date + '.eps',
+#            bbox_inches='tight')
     visits, appts, data = rows
-    for datum in data:
-        subplots.append(ax.bar(ind + i * width,
-            datum, width, color = tableau20[i%len(tableau20)]))
-        i += 1
-    ax.set_ylabel('percentages')
-    ax.set_xticks(ind + width)
-    ax.set_xticklabels(headers[FIRST_DATA_COLUMN:LAST_DATA_COLUMN+1])
-    ax.set_title(department + " " + date)
-    ax.legend([subplot[0] for subplot in subplots],
-        [visits[j] + "(" + appts[j] + ")" for j in xrange(len(visits))],
-        bbox_to_anchor=(1.05, 1), 
-        borderaxespad=0.,
-        loc = 2)
-    plt.savefig(output_directory + "/" + department + " " + date + '.eps',
-            bbox_inches='tight')
+    for row in xrange(len(data)):
+        fig = plt.figure()
+        datum = data[row]
+        #grid_cols = 2
+        #grid_rows = len(datum)/grid_cols + 1
+        #grid = GridSpec(grid_rows, grid_cols)
+        for column in xrange(len(datum)):
+            ax = fig.add_subplot(2, 2, column + 1)
+            plt.axis('equal')
+            value = datum[column]
+            complement = 1.0 - value
+            label = headers[FIRST_DATA_COLUMN + column]
+            labels = [label, ""]
+            bit = [value, complement]
+            #ax.subplot(grid[column/2, column % 2], aspect =1)
+            ax.pie(bit, labels=labels,
+                colors=tableau20[:len(labels)], autopct='%1.1f%%', 
+                startangle=90,
+                center=(column/2, column % 2))
+
+
+    plt.show()
+    sys.exit()
 
 

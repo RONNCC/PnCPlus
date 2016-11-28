@@ -210,7 +210,7 @@ class DataPage(QtGui.QWizardPage):
                 msg.setIcon(QMessageBox.Critical)
                 msg.setText("COULDNT FIND SCRIPT FOR REPORT TYPE: {}".format(filetype))
                 msg.setWindowTitle("HEALTHVIZ ERROR")
-            STRING_TO_RUN = 'python ../scripts/{} {}'.format(scriptToCall,file)
+            STRING_TO_RUN = "python ../scripts/{} '{}'".format(scriptToCall,file)
             print STRING_TO_RUN
             os.system(STRING_TO_RUN)
 

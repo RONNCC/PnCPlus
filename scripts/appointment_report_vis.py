@@ -96,8 +96,12 @@ for department, rows in departments.iteritems():
 #            bbox_inches='tight')
     visits, appts, data = rows
     for row in xrange(len(data)):
-        fig = plt.figure()
+        fig, ax = plt.subplots()
         datum = data[row]
+        title= visits[row]
+        n = appts[row]
+        plt.title(title + " (" + n + " appointments)")
+        ax.axis('off')
         #grid_cols = 2
         #grid_rows = len(datum)/grid_cols + 1
         #grid = GridSpec(grid_rows, grid_cols)
@@ -112,9 +116,7 @@ for department, rows in departments.iteritems():
             #ax.subplot(grid[column/2, column % 2], aspect =1)
             ax.pie(bit, labels=labels,
                 colors=tableau20[:len(labels)], autopct='%1.1f%%', 
-                startangle=90,
-                center=(column/2, column % 2))
-
+                startangle=90)
 
     plt.show()
     sys.exit()

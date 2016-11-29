@@ -4,10 +4,9 @@ import re
 import sys
 import os
 
-#example file_name: "International Status, Country of Origin, and Academic Level.csv"
 path = sys.argv[1]
 title_start = path.rfind(os.path.sep) + 1
-title = path[title_start :len(file_name)-4]
+title = path[title_start :len(path)-4]
 
 #date_regex = r'[0-9\-\.]*\.csv$'
 #date = re.search(date_regex, path).group()

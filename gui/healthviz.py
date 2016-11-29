@@ -2,9 +2,6 @@
 #!/usr/bin/env python
 
 import os, sys, os.path as osp,copy
-import sip
-sip.setapi('QString', 2)
-sip.setapi('QVariant', 2)
 from PyQt4 import QtCore, QtGui
 from os.path import isfile, join, basename
 import classwizard_rc
@@ -186,13 +183,12 @@ def createConclusionPage():
 
     return page
 
-
-
-if __name__ == '__main__':
-
-    import sys
+def runGUI():
     app = QtGui.QApplication(sys.argv)
     # QtGui.QApplication.setStyle("GTK+")
     wizard = ApplicationWizard() 
     wizard.show()
     sys.exit(app.exec_())
+
+if __name__ == '__main__':
+    runGUI()

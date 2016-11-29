@@ -1,7 +1,6 @@
 import matplotlib.pyplot as plt
-import csv
-import re
-import sys
+import csv, sys, re
+import Tkinter, FileDialog
 
 #example file_name: "../data/Appointment Utilization by Campus Residence.csv"
 file_name = sys.argv[1]
@@ -10,9 +9,8 @@ date_regex = r'[0-9\-\.]*\.csv$'
 date = re.search(date_regex, file_name).group()
 #remove file ending
 date = date[:len(date)-4]
-import os
-output_directory = ".." + os.path.sep + "output" + date 
-if(not os.path.isdir(os.getcwd() + os.path.sep + output_directory)):
+output_directory = "../output" + date 
+if(not os.path.isdir(os.getcwd() + "/" + output_directory)):
     os.mkdir(output_directory)
 
 RESIDENCE = 0
@@ -62,6 +60,6 @@ for i in xrange(1, len(headers), 2):
             autopct='%1.1f%%', startangle=90)
     #Make the pie a circle, not an ellipse
     plt.axis("equal")
-    plt.savefig(output_directory + os.path.sep + header+ " " +
+    plt.savefig(output_directory + "/" + header+ " " +
             date + '.eps', bbox_inches='tight')
 

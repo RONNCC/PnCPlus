@@ -6,6 +6,7 @@ import os
 
 # example file_name:  "Total Distinct Patients 8.19.13-8.18.14.csv"
 file_name = sys.argv[1]
+output_path = sys.argv[2]
 title_start = file_name.rfind(os.path.sep) + 1
 title = file_name[title_start :len(file_name)-4]
 
@@ -13,8 +14,8 @@ date_regex = r'[0-9\-\.]*\.csv$'
 date = re.search(date_regex, file_name).group()
 #remove file ending
 date = date[:len(date)-4]
-output_directory = ".." + os.path.sep + "output" + date 
-if(not os.path.isdir(os.getcwd() + os.path.sep + output_directory)):
+output_directory = output_path + os.path.sep + "total_distinct_patients" + date 
+if(not os.path.isdir(output_directory)):
     os.mkdir(output_directory)
 
 PATIENT_COUNT= 1

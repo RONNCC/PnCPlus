@@ -6,6 +6,7 @@ import os
 
 #example file_name: "UHS Exam Room Utilization 8.1.14-7.31.15.csv"
 path= sys.argv[1]
+output_path = sys.argv[2]
 #os.path.sep is used because Windows uses \\ in paths and
 #Unix uses / in paths. os.path.sep figures out which one
 #to use for us
@@ -16,8 +17,8 @@ date_regex = r'[0-9\-\.]*\.csv$'
 date = re.search(date_regex, path).group()
 #remove file ending
 date = date[:len(date)-4]
-output_directory = ".." + os.path.sep + "output" + date 
-if(not os.path.isdir(os.getcwd() + os.path.sep + output_directory)):
+output_directory = output_path + os.path.sep + "uhs" + date 
+if(not os.path.isdir(output_directory)):
     os.mkdir(output_directory)
 
 ROOM= 0

@@ -1,23 +1,19 @@
 import matplotlib.pyplot as plt
 import csv
 import re
-import sys
-import os
 
 #example file_name: "UHS Exam Room Utilization 8.1.14-7.31.15.csv"
-path= sys.argv[1]
-#os.path.sep is used because Windows uses \\ in paths and
-#Unix uses / in paths. os.path.sep figures out which one
-#to use for us
-title_start = path.rfind(os.path.sep) + 1
-title = path[title_start :len(path)-4]
+file_name = sys.argv[1]
+title = file_name[:len(file_name)-4]
+path = "../data/" + file_name
 
 date_regex = r'[0-9\-\.]*\.csv$'
 date = re.search(date_regex, path).group()
 #remove file ending
 date = date[:len(date)-4]
-output_directory = ".." + os.path.sep + "output" + date 
-if(not os.path.isdir(os.getcwd() + os.path.sep + output_directory)):
+import os
+output_directory = "../output" + date 
+if(not os.path.isdir(os.getcwd() + "/" + output_directory)):
     os.mkdir(output_directory)
 
 ROOM= 0
@@ -61,8 +57,7 @@ plt.barh(y_pos, counts, align = 'center', color=tableau20[0])
 plt.yticks(y_pos, labels)
 plt.xlabel("number of appointments")
 
-
 #Make the pie a circle, not an ellipse
-plt.savefig(output_directory + os.path.sep + title
-        + '.eps', bbox_inches='tight')
+plt.savefig(output_directory + "/" + title+ " " +
+        date + '.eps', bbox_inches='tight')
 

@@ -1,19 +1,18 @@
 import matplotlib.pyplot as plt
-import csv
-import re
-import sys
-import os
+import csv, sys, re
+import Tkinter, FileDialog
 
-path = sys.argv[1]
-title_start = path.rfind(os.path.sep) + 1
-title = path[title_start :len(path)-4]
+#example file_name: "International Status, Country of Origin, and Academic Level.csv"
+file_name = sys.argv[1]
+title = file_name[:len(file_name)-4]
+path = "../data/" + file_name
 
 #date_regex = r'[0-9\-\.]*\.csv$'
 #date = re.search(date_regex, path).group()
 ##remove file ending
 #date = date[:len(date)-4]
-output_directory = ".." + os.path.sep + "ctry_orig"
-if(not os.path.isdir(os.getcwd() + os.path.sep + output_directory)):
+output_directory = "../ctry_orig"
+if(not os.path.isdir(os.getcwd() + "/" + output_directory)):
     os.mkdir(output_directory)
 
 ACADEMIC_LVL = 0
@@ -71,6 +70,6 @@ plt.barh(y_pos, counts, align = 'center', color=tableau20[0])
 plt.yticks(y_pos, countries)
 plt.xlabel("number of students")
 
-plt.savefig(output_directory + os.path.sep + title+ " " +
+plt.savefig(output_directory + "/" + title+ " " +
         '.eps', bbox_inches='tight')
 

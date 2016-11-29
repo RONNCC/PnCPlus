@@ -1,46 +1,4 @@
-
 #!/usr/bin/env python
-
-
-#############################################################################
-##
-## Copyright (C) 2010 Riverbank Computing Limited.
-## Copyright (C) 2010 Nokia Corporation and/or its subsidiary(-ies).
-## All rights reserved.
-##
-## This file is part of the examples of PyQt.
-##
-## $QT_BEGIN_LICENSE:BSD$
-## You may use this file under the terms of the BSD license as follows:
-##
-## "Redistribution and use in source and binary forms, with or without
-## modification, are permitted provided that the following conditions are
-## met:
-##   * Redistributions of source code must retain the above copyright
-##     notice, this list of conditions and the following disclaimer.
-##   * Redistributions in binary form must reproduce the above copyright
-##     notice, this list of conditions and the following disclaimer in
-##     the documentation and/or other materials provided with the
-##     distribution.
-##   * Neither the name of Nokia Corporation and its Subsidiary(-ies) nor
-##     the names of its contributors may be used to endorse or promote
-##     products derived from this software without specific prior written
-##     permission.
-##
-## THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-## "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-## LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
-## A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
-## OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-## SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-## LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
-## DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
-## THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-## (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-## OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE."
-## $QT_END_LICENSE$
-##
-#############################################################################
 
 import os, sys, os.path as osp,copy
 from PyQt4 import QtCore, QtGui
@@ -71,7 +29,6 @@ class ApplicationWizard(QtGui.QWizard):
         # self.addPage(PageDataTypesPage())
         self.addPage(DataPage())
         self.addPage(createConclusionPage())
-
         self.setPixmap(QtGui.QWizard.BannerPixmap,
                 QtGui.QPixmap(':/images/banner.png'))
         self.setPixmap(QtGui.QWizard.BackgroundPixmap,
@@ -110,13 +67,7 @@ class RegistrationPage(QtGui.QWizardPage):
     num_in_rows=0
     in_files = {}
     in_files_type = {}
-    # def in_files_get():
-    #     return __input_files
 
-    # def in_files_set(val):
-    #     __input_files = val
-
-    # input_files_list = QtCore.pyqtProperty(list, in_files_get, in_files_set)
     def __add_another_row(self,layout):
         k = self.__make_file_choose_row(layout,RegistrationPage.num_in_rows)
         layout.addLayout(k)
@@ -132,6 +83,7 @@ class RegistrationPage(QtGui.QWizardPage):
         fileKind = QtGui.QComboBox()
         for kind in FILE_KINDS:
             fileKind.addItem(kind)
+        RegistrationPage.in_files_type[thisrownum] = fileKind.currentText()
         fileKind.currentIndexChanged.connect(lambda: setReportType(self,fileKind,thisrownum))
         selectHBox = QtGui.QHBoxLayout()
         selectHBox.addWidget(btn)
@@ -149,8 +101,6 @@ class RegistrationPage(QtGui.QWizardPage):
         tophbox = QtGui.QVBoxLayout()
         botvbox = QtGui.QVBoxLayout()
         mainvbox = QtGui.QVBoxLayout()
-
-
 
         """ TOP DYNAMIC ADD HALF """
         tophbox.addWidget(QtGui.QLabel("CSV Inputs"))
@@ -171,35 +121,37 @@ class RegistrationPage(QtGui.QWizardPage):
         botvbox.addWidget(nameLabel2)
         botvbox.addLayout(outputHbox)
 
-
         mainvbox.addLayout(tophbox)
         mainvbox.addStretch(1)
         mainvbox.addLayout(botvbox)
 
-        # self.registerField("input_dir*", fileLabel)
         self.registerField("output_dir*", fileLabel2)
-        # layout.addWidget(emailLineEdit, 1, 1)
         self.setLayout(mainvbox)
 
 
 class DataPage(QtGui.QWizardPage):
     def __init__(self, parent=None):
         super(DataPage, self).__init__(parent)
-        page = QtGui.QWizardPage()
-        page.setTitle("Data")
+        self.setTitle("Data")
         layout = QtGui.QGridLayout()
-        label = QtGui.QLabel("Output should now be generated")
+        label = QtGui.QLabel("Output should now be generating!")
+        loadBar = QtGui.QProgressBar()
+        self.loadBar = loadBar
+        loadBar.setRange(0,100)
         label.setWordWrap(True)
         layout.addWidget(label)
-
-        page.setLayout(layout)
-        return None
+        layout.addWidget(loadBar)
+        self.setLayout(layout)
 
     def initializePage(self):
         in_files = list(RegistrationPage.in_files.values())
         in_files = [join(in_files, f) for f in in_files if isfile(f)]
         in_files_type = list(RegistrationPage.in_files_type.values())
         in_files_w_type = zip(in_files,in_files_type)
+        print 'INFILES /w types: ', in_files_w_type
+        print 'OUTPUT DIR:', self.field('output_dir')
+        totalToProcess = len(in_files_w_type)
+        doneProcessing = 0
         for file,filetype in in_files_w_type:
             scriptToCall = getReportToCall(filetype)
             if scriptToCall == None:
@@ -207,9 +159,11 @@ class DataPage(QtGui.QWizardPage):
                 msg.setIcon(QMessageBox.Critical)
                 msg.setText("COULDNT FIND SCRIPT FOR REPORT TYPE: {}".format(filetype))
                 msg.setWindowTitle("HEALTHVIZ ERROR")
-            STRING_TO_RUN = "python ../scripts/{} '{}'".format(scriptToCall,file)
+            STRING_TO_RUN = "python scripts"+os.path.sep+"{} '{}' {}".format(scriptToCall,file,self.field('output_dir'))
             print STRING_TO_RUN
             os.system(STRING_TO_RUN)
+            doneProcessing += 1
+            self.loadBar.value =  doneProcessing/totalToProcess
 
 def createConclusionPage():
     page = QtGui.QWizardPage()
@@ -226,7 +180,6 @@ def createConclusionPage():
 
 def runGUI():
     app = QtGui.QApplication(sys.argv)
-    # QtGui.QApplication.setStyle("GTK+")
     wizard = ApplicationWizard() 
     wizard.show()
     sys.exit(app.exec_())

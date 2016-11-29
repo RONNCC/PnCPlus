@@ -5,6 +5,7 @@ import sys
 import os
 
 path = sys.argv[1]
+output_path = sys.argv[2]
 title_start = path.rfind(os.path.sep) + 1
 title = path[title_start :len(path)-4]
 
@@ -12,8 +13,8 @@ title = path[title_start :len(path)-4]
 #date = re.search(date_regex, path).group()
 ##remove file ending
 #date = date[:len(date)-4]
-output_directory = ".." + os.path.sep + "ctry_orig"
-if(not os.path.isdir(os.getcwd() + os.path.sep + output_directory)):
+output_directory = output_path + os.path.sep + "ctry_orig"
+if(not os.path.isdir(output_directory)):
     os.mkdir(output_directory)
 
 ACADEMIC_LVL = 0

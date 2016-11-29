@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
-import csv
-import re
+import csv, sys, re, os, numpy as np
+import Tkinter, FileDialog
 
 #example file_name: "UHS Exam Room Utilization 8.1.14-7.31.15.csv"
 path= sys.argv[1]
@@ -21,7 +21,6 @@ if(not os.path.isdir(output_directory)):
 
 ROOM= 0
 COUNT= 1
-
 data = []
 
 with open(path, "rb") as f:
@@ -45,8 +44,6 @@ for i in xrange(len(tableau20)):
 plt.title(title)
 labels=[]
 counts = []
-
-import numpy as np
 
 for j in xrange(len(data)):
     row = data[j]

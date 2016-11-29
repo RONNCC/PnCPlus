@@ -1,5 +1,5 @@
 import matplotlib.pyplot as plt
-import csv, sys, re, os
+import csv, sys, re, os, numpy as np
 import Tkinter, FileDialog
 
 # example file_name:  "Total Distinct Patients 8.19.13-8.18.14.csv"
@@ -50,7 +50,6 @@ for j in xrange(len(data)):
     labels.append(row[ACADEMIC_LEVEL] + "(" + row[PATIENT_COUNT] + ")")
     counts.append(row[PATIENT_COUNT])
 
-import numpy as np
 y_pos = np.arange(len(labels)) + 0.5
 
 ax.barh(y_pos, counts, align='center', color=tableau20[1])

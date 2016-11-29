@@ -2,17 +2,17 @@ import matplotlib.pyplot as plt
 import csv
 import re
 import sys
+import os
 
-#example file_name: "../data/Appointment Utilization by Campus Residence.csv"
-file_name = sys.argv[1]
+input_path = sys.argv[1]
+output_path = sys.argv[2]
 
 date_regex = r'[0-9\-\.]*\.csv$'
-date = re.search(date_regex, file_name).group()
+date = re.search(date_regex, input_path).group()
 #remove file ending
 date = date[:len(date)-4]
-import os
-output_directory = ".." + os.path.sep + "output" + date 
-if(not os.path.isdir(os.getcwd() + os.path.sep + output_directory)):
+output_directory = output_path + os.path.sep + "Appointment Util" + date 
+if(not os.path.isdir(output_directory)):
     os.mkdir(output_directory)
 
 RESIDENCE = 0
@@ -25,7 +25,7 @@ CLIENTS_PERC = 6
 
 data = []
 
-with open(file_name, "rb") as f:
+with open(input_path, "rb") as f:
     reader = csv.reader(f)
     headers = reader.next()
 

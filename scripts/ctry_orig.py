@@ -1,5 +1,5 @@
 import matplotlib.pyplot as plt
-import csv, sys, re
+import csv, sys, re, os
 import Tkinter, FileDialog
 
 #example file_name: "International Status, Country of Origin, and Academic Level.csv"

@@ -3,7 +3,7 @@
 #that is in the same directory as this program.
 
 import matplotlib.pyplot as plt
-import csv, sys, re
+import csv, sys, re, os, numpy as np
 import Tkinter, FileDialog
 
 #example file_name: "../data/Appointment Report by Department & Visit Type 11.1.16-5.13.16.csv"
@@ -59,8 +59,6 @@ for i in range(len(tableau20)):
     r, g, b = tableau20[i]    
     tableau20[i] = (r / 255., g / 255., b / 255.)
 
-import numpy as np
-import os
 #N is the number of data columns
 N = LAST_DATA_COLUMN - FIRST_DATA_COLUMN + 1
 ind = np.arange(N)

@@ -3,17 +3,20 @@ import csv
 import re
 
 #example file_name: "UHS Exam Room Utilization 8.1.14-7.31.15.csv"
-file_name = sys.argv[1]
-title = file_name[:len(file_name)-4]
-path = "../data/" + file_name
+path= sys.argv[1]
+output_path = sys.argv[2]
+#os.path.sep is used because Windows uses \\ in paths and
+#Unix uses / in paths. os.path.sep figures out which one
+#to use for us
+title_start = path.rfind(os.path.sep) + 1
+title = path[title_start :len(path)-4]
 
 date_regex = r'[0-9\-\.]*\.csv$'
 date = re.search(date_regex, path).group()
 #remove file ending
 date = date[:len(date)-4]
-import os
-output_directory = "../output" + date 
-if(not os.path.isdir(os.getcwd() + "/" + output_directory)):
+output_directory = output_path + os.path.sep + "uhs" + date 
+if(not os.path.isdir(output_directory)):
     os.mkdir(output_directory)
 
 ROOM= 0

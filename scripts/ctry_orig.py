@@ -2,17 +2,17 @@ import matplotlib.pyplot as plt
 import csv, sys, re, os
 import Tkinter, FileDialog
 
-#example file_name: "International Status, Country of Origin, and Academic Level.csv"
-file_name = sys.argv[1]
-title = file_name[:len(file_name)-4]
-path = "../data/" + file_name
+path = sys.argv[1]
+output_path = sys.argv[2]
+title_start = path.rfind(os.path.sep) + 1
+title = path[title_start :len(path)-4]
 
 #date_regex = r'[0-9\-\.]*\.csv$'
 #date = re.search(date_regex, path).group()
 ##remove file ending
 #date = date[:len(date)-4]
-output_directory = "../ctry_orig"
-if(not os.path.isdir(os.getcwd() + "/" + output_directory)):
+output_directory = output_path + os.path.sep + "ctry_orig"
+if(not os.path.isdir(output_directory)):
     os.mkdir(output_directory)
 
 ACADEMIC_LVL = 0

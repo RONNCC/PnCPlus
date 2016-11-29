@@ -67,8 +67,8 @@ import os
 N = LAST_DATA_COLUMN - FIRST_DATA_COLUMN + 1
 ind = np.arange(N)
 
-output_directory = "../output" + date
-if(not os.path.isdir(os.getcwd() + "/" + output_directory)):
+output_directory = ".." + os.path.sep + "output" + date
+if(not os.path.isdir(os.getcwd() + os.path.sep + output_directory)):
     os.mkdir(output_directory)
 
 

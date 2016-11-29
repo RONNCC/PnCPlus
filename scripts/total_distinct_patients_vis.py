@@ -2,18 +2,19 @@ import matplotlib.pyplot as plt
 import csv
 import re
 import sys
+import os
 
 # example file_name:  "Total Distinct Patients 8.19.13-8.18.14.csv"
 file_name = sys.argv[1]
-title = file_name[:len(file_name)-4]
+title_start = file_name.rfind(os.path.sep) + 1
+title = file_name[title_start :len(file_name)-4]
 
 date_regex = r'[0-9\-\.]*\.csv$'
 date = re.search(date_regex, file_name).group()
 #remove file ending
 date = date[:len(date)-4]
-import os
-output_directory = "../output" + date 
-if(not os.path.isdir(os.getcwd() + "/" + output_directory)):
+output_directory = ".." + os.path.sep + "output" + date 
+if(not os.path.isdir(os.getcwd() + os.path.sep + output_directory)):
     os.mkdir(output_directory)
 
 PATIENT_COUNT= 1
@@ -59,6 +60,6 @@ plt.xlabel("number of distinct patients")
 plt.show()
 sys.exit()
 
-plt.savefig(output_directory + "/" + title+ " " +
+plt.savefig(output_directory + os.path.sep + title+ " " +
         date + '.eps', bbox_inches='tight')
 

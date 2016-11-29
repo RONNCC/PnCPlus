@@ -1,11 +1,12 @@
 import matplotlib.pyplot as plt
 import csv
 import re
+import sys
 
 #example file_name: "UHS Exam Room Utilization 8.1.14-7.31.15.csv"
-file_name = sys.argv[1]
-title = file_name[:len(file_name)-4]
-path = "../data/" + file_name
+path= sys.argv[1]
+title_start = path.rfind('/') + 1
+title = path[title_start :len(path)-4]
 
 date_regex = r'[0-9\-\.]*\.csv$'
 date = re.search(date_regex, path).group()
@@ -57,7 +58,8 @@ plt.barh(y_pos, counts, align = 'center', color=tableau20[0])
 plt.yticks(y_pos, labels)
 plt.xlabel("number of appointments")
 
+
 #Make the pie a circle, not an ellipse
-plt.savefig(output_directory + "/" + title+ " " +
-        date + '.eps', bbox_inches='tight')
+plt.savefig(output_directory + "/" + title
+        + '.eps', bbox_inches='tight')
 

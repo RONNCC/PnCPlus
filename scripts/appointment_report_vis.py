@@ -68,7 +68,7 @@ N = LAST_DATA_COLUMN - FIRST_DATA_COLUMN + 1
 ind = np.arange(N)
 
 output_directory = output_path + os.path.sep + "appointment_report" + date
-if(not os.path.isdir(os.getcwd() + os.path.sep + output_directory)):
+if(not os.path.isdir(output_directory)):
     os.mkdir(output_directory)
 
 

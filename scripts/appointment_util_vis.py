@@ -60,6 +60,6 @@ for i in xrange(1, len(headers), 2):
             autopct='%1.1f%%', startangle=90)
     #Make the pie a circle, not an ellipse
     plt.axis("equal")
-    plt.savefig(output_directory + "/" + header+ " " +
+    plt.savefig(output_directory + "/" + header+ 
             date + '.eps', bbox_inches='tight')
 

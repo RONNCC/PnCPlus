@@ -4,13 +4,13 @@
 
 
 import matplotlib.pyplot as plt
-from matplotlib.gridspec import GridSpec
 import csv
 import sys
 import re
 
 #example file_name: "../data/Appointment Report by Department & Visit Type 11.1.16-5.13.16.csv"
 file_name= sys.argv[1]
+output_path = sys.argv[2]
 
 date_regex = r'[0-9\-\.]*\.csv$'
 date = re.search(date_regex, file_name).group()
@@ -67,7 +67,7 @@ import os
 N = LAST_DATA_COLUMN - FIRST_DATA_COLUMN + 1
 ind = np.arange(N)
 
-output_directory = ".." + os.path.sep + "output" + date
+output_directory = output_path + os.path.sep + "appointment_report" + date
 if(not os.path.isdir(os.getcwd() + os.path.sep + output_directory)):
     os.mkdir(output_directory)
 
@@ -102,9 +102,6 @@ for department, rows in departments.iteritems():
         n = appts[row]
         plt.title(title + " (" + n + " appointments)")
         ax.axis('off')
-        #grid_cols = 2
-        #grid_rows = len(datum)/grid_cols + 1
-        #grid = GridSpec(grid_rows, grid_cols)
         for column in xrange(len(datum)):
             ax = fig.add_subplot(2, 2, column + 1)
             plt.axis('equal')
@@ -117,8 +114,5 @@ for department, rows in departments.iteritems():
             ax.pie(bit, labels=labels,
                 colors=tableau20[:len(labels)], autopct='%1.1f%%', 
                 startangle=90)
-
-    plt.show()
-    sys.exit()
-
-
+        plt.savefig(output_directory + "/" + department + " " + date + '.eps',
+                bbox_inches='tight')

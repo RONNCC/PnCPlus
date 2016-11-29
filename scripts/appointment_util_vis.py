@@ -1,8 +1,6 @@
 import matplotlib.pyplot as plt
-import csv
-import re
-import sys
-import os
+import csv, sys, re, os
+import Tkinter, FileDialog
 
 input_path = sys.argv[1]
 output_path = sys.argv[2]
@@ -62,6 +60,6 @@ for i in xrange(1, len(headers), 2):
             autopct='%1.1f%%', startangle=90)
     #Make the pie a circle, not an ellipse
     plt.axis("equal")
-    plt.savefig(output_directory + os.path.sep + header+ " " +
+    plt.savefig(output_directory + "/" + header+ " " +
             date + '.eps', bbox_inches='tight')
 

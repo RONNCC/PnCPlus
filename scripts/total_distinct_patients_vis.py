@@ -1,8 +1,6 @@
 import matplotlib.pyplot as plt
-import csv
-import re
-import sys
-import os
+import csv, sys, re
+import Tkinter, FileDialog
 
 # example file_name:  "Total Distinct Patients 8.19.13-8.18.14.csv"
 file_name = sys.argv[1]
@@ -58,7 +56,9 @@ y_pos = np.arange(len(labels)) + 0.5
 ax.barh(y_pos, counts, align='center', color=tableau20[1])
 plt.yticks(y_pos, labels)
 plt.xlabel("number of distinct patients")
+plt.show()
+sys.exit()
 
-plt.savefig(output_directory + os.path.sep + title+ " " +
+plt.savefig(output_directory + "/" + title+ " " +
         date + '.eps', bbox_inches='tight')
 

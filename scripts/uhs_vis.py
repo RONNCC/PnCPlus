@@ -1,8 +1,6 @@
 import matplotlib.pyplot as plt
 import csv
 import re
-import sys
-import os
 
 #example file_name: "UHS Exam Room Utilization 8.1.14-7.31.15.csv"
 path= sys.argv[1]
@@ -62,8 +60,7 @@ plt.barh(y_pos, counts, align = 'center', color=tableau20[0])
 plt.yticks(y_pos, labels)
 plt.xlabel("number of appointments")
 
-
 #Make the pie a circle, not an ellipse
-plt.savefig(output_directory + os.path.sep + title
-        + '.eps', bbox_inches='tight')
+plt.savefig(output_directory + "/" + title+ " " +
+        date + '.eps', bbox_inches='tight')
 

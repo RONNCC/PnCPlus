@@ -1,8 +1,6 @@
 import matplotlib.pyplot as plt
-import csv
-import re
-import sys
-import os
+import csv, sys, re
+import Tkinter, FileDialog
 
 path = sys.argv[1]
 output_path = sys.argv[2]
@@ -72,6 +70,6 @@ plt.barh(y_pos, counts, align = 'center', color=tableau20[0])
 plt.yticks(y_pos, countries)
 plt.xlabel("number of students")
 
-plt.savefig(output_directory + os.path.sep + title+ " " +
+plt.savefig(output_directory + "/" + title+ " " +
         '.eps', bbox_inches='tight')
 

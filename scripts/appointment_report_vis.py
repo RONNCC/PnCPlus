@@ -2,11 +2,9 @@
 #report. It will output a series of grouped bar graphs into the folder "output"
 #that is in the same directory as this program.
 
-
 import matplotlib.pyplot as plt
-import csv
-import sys
-import re
+import csv, sys, re
+import Tkinter, FileDialog
 
 #example file_name: "../data/Appointment Report by Department & Visit Type 11.1.16-5.13.16.csv"
 file_name= sys.argv[1]

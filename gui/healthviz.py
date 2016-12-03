@@ -4,11 +4,11 @@ import os, sys, os.path as osp,copy, time
 from PyQt4 import QtCore, QtGui
 from os.path import isfile, join, basename
 import classwizard_rc
-from ..scripts.appointment_report_vis import runReport as appointment_report_vis_report
-from ..scripts.appointment_util_vis import runReport as appointment_util_vis_report
-from ..scripts.ctry_orig import runReport as ctry_orig_report
-from ..scripts.total_distinct_patients_vis import runReport as total_distinct_patients_vis_report
-from ..scripts.uhs_vis import runReport as uhs_vis_report
+from scripts.appointment_report_vis import runReport as appointment_report_vis_report
+from scripts.appointment_util_vis import runReport as appointment_util_vis_report
+from scripts.ctry_orig import runReport as ctry_orig_report
+from scripts.total_distinct_patients_vis import runReport as total_distinct_patients_vis_report
+from scripts.uhs_vis import runReport as uhs_vis_report
 
 FILE_KINDS = ['Appointment Report','Appointment Util','Intl Status/Orig',
              'Total Distinct Patients','UHS Exam Room Vis']

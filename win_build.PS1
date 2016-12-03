@@ -23,4 +23,4 @@ Set-Location C:\Users\shomirog\SandBox
 python27\Scripts\pip install -t "C:\Users\shomirog\SandBox\python27" -r PnCPlus-master\requirements.txt
 python27\Scripts\pip install -t "C:\Users\shomirog\SandBox\python27" https://github.com/pyinstaller/pyinstaller/archive/develop.zip
 Set-Location C:\Users\shomirog\SandBox\PncPlus
-C:\Users\shomirog\SandBox\python27\Scripts\python C:\Users\shomirog\SandBox\python27\Scripts\pyinstaller --runtime-hook pyqt4_runtimehook.py --onefile --windowed main.py
+C:\Users\shomirog\SandBox\python27\python C:\Users\shomirog\SandBox\python27\Scripts\pyinstaller-script.py --runtime-hook pyqt4_runtimehook.py --onefile --windowed main.py

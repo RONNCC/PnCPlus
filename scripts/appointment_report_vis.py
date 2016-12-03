@@ -67,6 +67,8 @@ output_directory = output_path + os.path.sep + "appointment_report" + date
 if(not os.path.isdir(output_directory)):
     os.mkdir(output_directory)
 
+all_types = []
+all_counts = []
 
 #for every department, make a new bar graph
 for department, rows in departments.iteritems():
@@ -95,9 +97,12 @@ for department, rows in departments.iteritems():
         fig, ax = plt.subplots()
         datum = data[row]
         title= visits[row]
+        n = appts[row]
         if(title == ""):
             title = department
-        n = appts[row]
+        else:
+            all_types.append(title)
+            all_counts.append(n)
         plt.title(title + " (" + n + " appointments)")
         ax.axis('off')
         for column in xrange(len(datum)):
@@ -116,3 +121,18 @@ for department, rows in departments.iteritems():
         safe_title= re.sub(r'[\/\\:;]', '', title)
         plt.savefig(output_directory + "/" + safe_title + " " + date + '.eps',
                 bbox_inches='tight')
+        #Closing figure to save memory
+        plt.close()
+fig = plt.figure()
+ax = fig.gca()
+#import matplotlib
+#matplotlib.rcParams.update({'font.size': 5})
+y_pos = np.arange(len(all_types)) + 0.5
+ax.barh(y_pos, all_counts, align='center', tick_label=all_types,
+        height= 0.5)
+ax.set_ylabel('Appointment type')
+ax.set_yticklabels(all_types, fontsize=5)
+ax.set_xlabel('Number of appointments')
+ax.set_title('Number of appointments per appointment type')
+plt.savefig(output_directory + "/TOTAL" + date + '.eps',
+        bbox_inches='tight')

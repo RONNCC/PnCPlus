@@ -161,7 +161,7 @@ class DataPage(QtGui.QWizardPage):
 
     def createGraphs(self):
         in_files = list(RegistrationPage.in_files.values())
-        in_files = [join(in_files, f) for f in in_files if isfile(f)]
+        in_files = [f for f in in_files if isfile(f)]
         in_files_type = list(RegistrationPage.in_files_type.values())
         in_files_w_type = zip(in_files,in_files_type)
         print 'INFILES /w types: ', in_files_w_type

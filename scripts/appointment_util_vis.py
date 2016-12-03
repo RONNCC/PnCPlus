@@ -62,4 +62,8 @@ for i in xrange(1, len(headers), 2):
     plt.axis("equal")
     plt.savefig(output_directory + "/" + header+ 
             date + '.eps', bbox_inches='tight')
+    #You need to close after you are done with a figure so that the computer
+    #know not to keep track of the current figure anymore. Not doing so will
+    #make the computer use up its memory
+    plt.close()
 

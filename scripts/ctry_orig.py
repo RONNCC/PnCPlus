@@ -7,7 +7,7 @@ from collections import Counter
 
 def runReport(path, output_path):
     
-    title_start = path.rfind(os.path.sep) + 1
+    title_start = path.rfind('/') + 1
     title = path[title_start :len(path)-4]
     
     output_directory = output_path + os.path.sep + "ctry_orig"

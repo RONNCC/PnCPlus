@@ -4,22 +4,28 @@ import os, sys, os.path as osp,copy, time
 from PyQt4 import QtCore, QtGui
 from os.path import isfile, join, basename
 import classwizard_rc
+from ..scripts.appointment_report_vis import runReport as appointment_report_vis_report
+from ..scripts.appointment_util_vis import runReport as appointment_util_vis_report
+from ..scripts.ctry_orig import runReport as ctry_orig_report
+from ..scripts.total_distinct_patients_vis import runReport as total_distinct_patients_vis_report
+from ..scripts.uhs_vis import runReport as uhs_vis_report
 
 FILE_KINDS = ['Appointment Report','Appointment Util','Intl Status/Orig',
              'Total Distinct Patients','UHS Exam Room Vis']
 
 def getReportToCall(reportType):
     if reportType == 'Appointment Report':
-        return 'appointment_report_vis.py'
+        return ('appointment_report_vis.py', appointment_report_vis_report)
     if reportType == 'Appointment Util':
-        return 'appointment_util_vis.py'
+        return ( 'appointment_util_vis.py', appointment_util_vis_report)
     if reportType == 'Intl Status/Orig':
-        return 'ctry_orig.py'
+        return ('ctry_orig.py', ctry_orig_report)
     if reportType == 'Total Distinct Patients':
-        return 'total_distinct_patients_vis.py'
+        return ('total_distinct_patients_vis.py', total_distinct_patients_vis_report)
     if reportType == 'UHS Exam Room Vis':
-        return 'uhs_vis.py'
-    return None
+        return ('uhs_vis.py', uhs_vis_report)
+    return None, None
+    
 class ApplicationWizard(QtGui.QWizard):
     def __init__(self, parent=None):
         super(ApplicationWizard, self).__init__(parent)
@@ -163,15 +169,15 @@ class DataPage(QtGui.QWizardPage):
         totalToProcess = len(in_files_w_type)*1.0
         doneProcessing = 0
         for file,filetype in in_files_w_type:
-            scriptToCall = getReportToCall(filetype)
-            if scriptToCall == None:
+            scriptToCall,progToCall = getReportToCall(filetype)
+            if scriptToCall == None or progToCall == None:
                 msg = QMessageBox()
                 msg.setIcon(QMessageBox.Critical)
                 msg.setText("COULDNT FIND SCRIPT FOR REPORT TYPE: {}".format(filetype))
                 msg.setWindowTitle("HEALTHVIZ ERROR")
-            STRING_TO_RUN = 'python scripts'+os.path.sep+'{} "{}" "{}"'.format(scriptToCall,file,self.field('output_dir'))
-            print '({}/{})RUNNING: '.format(doneProcessing,totalToProcess), STRING_TO_RUN
-            os.system(STRING_TO_RUN)
+                
+            print '({}/{} RUNNING: '.format(doneProcessing,totalToProcess), scriptToCall, progToCall.__name__
+            progToCall(file,self.field('output_dir'))
             doneProcessing += 1
             self.loadBar.setValue(doneProcessing/totalToProcess)
             QtGui.QApplication.processEvents()

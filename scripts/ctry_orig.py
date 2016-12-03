@@ -19,6 +19,8 @@ ACADEMIC_LVL = 0
 INTERNATIONAL_BOOL = 1
 COUNTRY = 2
 
+NUMBER_OF_CTRY_DISPLAYED = 20
+
 from collections import Counter
 
 all_count = Counter()
@@ -54,17 +56,26 @@ for i in xrange(len(tableau20)):
     tableau20[i] = (r / 255., g / 255., b / 255.)
 
 plt.title(title)
-countries=[]
-counts = []
+heap = []
 
 import numpy as np
+import heapq
 for country in international_count:
     count = international_count[country]
+    heap.append((-1 * count, country))
+
+heapq.heapify(heap)
+y_pos = np.arange(NUMBER_OF_CTRY_DISPLAYED) +0.5
+
+counts = []
+countries = []
+for i in xrange(NUMBER_OF_CTRY_DISPLAYED):
+    (count, country) = heapq.heappop(heap)
+    counts.append(-1 * count)
     countries.append(country)
-    counts.append(count)
 
-y_pos = np.arange(len(countries)) +0.5
-
+countries.reverse()
+counts.reverse()
 
 plt.barh(y_pos, counts, align = 'center', color=tableau20[0])
 plt.yticks(y_pos, countries)

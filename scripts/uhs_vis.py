@@ -4,12 +4,12 @@ import Tkinter, FileDialog
 
 #example file_name: "UHS Exam Room Utilization 8.1.14-7.31.15.csv"
 
-def runReport(input_path, output_path):
+def runReport(path, output_path):
     
     #os.path.sep is used because Windows uses \\ in paths and
     #Unix uses / in paths. os.path.sep figures out which one
     #to use for us
-    title_start = path.rfind(os.path.sep) + 1
+    title_start = path.rfind('/') + 1
     title = path[title_start :len(path)-4]
     
     date_regex = r'[0-9\-\.]*\.csv$'

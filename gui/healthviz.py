@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import os, sys, os.path as osp,copy
+import os, sys, os.path as osp,copy, time
 from PyQt4 import QtCore, QtGui
 from os.path import isfile, join, basename
 import classwizard_rc
@@ -42,7 +42,9 @@ class IntroPage(QtGui.QWizardPage):
         self.setPixmap(QtGui.QWizard.WatermarkPixmap,
                 QtGui.QPixmap(':/images/watermark1.png'))
 
-        label = QtGui.QLabel("This app will help you import your data and visualize it")
+        label = QtGui.QLabel("This app will help you import your data and visualize it<br><br>."+
+                             "We will ask for the exported report files you want to visualize "+
+                             "and the kind of report file they are!")
         label.setWordWrap(True)
 
         layout = QtGui.QVBoxLayout()
@@ -76,13 +78,18 @@ class RegistrationPage(QtGui.QWizardPage):
     def __make_file_choose_row(self,layout,rownum):
         thisrownum = copy.copy(rownum)
         btn = QtGui.QPushButton("Select File")
+        btn.setToolTip('Select a report file!')
         btn2 = QtGui.QPushButton("+")
+        btn2.setToolTip('Add another file')
         fileLabel = QtGui.QLineEdit("")
+        fileLabel.setToolTip("The location of the file currently selected")
         btn.clicked.connect(lambda: getfile(self, fileLabel,thisrownum))    
         btn2.clicked.connect(lambda: self.__add_another_row(layout))
         fileKind = QtGui.QComboBox()
         for kind in FILE_KINDS:
             fileKind.addItem(kind)
+        fileKind.setToolTip('Choose what kind of report this is - it should be similar to<br>'+
+                            'the name of the PointNClick report you used to export the file')
         RegistrationPage.in_files_type[thisrownum] = fileKind.currentText()
         fileKind.currentIndexChanged.connect(lambda: setReportType(self,fileKind,thisrownum))
         selectHBox = QtGui.QHBoxLayout()
@@ -103,12 +110,13 @@ class RegistrationPage(QtGui.QWizardPage):
         mainvbox = QtGui.QVBoxLayout()
 
         """ TOP DYNAMIC ADD HALF """
-        tophbox.addWidget(QtGui.QLabel("CSV Inputs"))
+        tophbox.addWidget(QtGui.QLabel("Choose the report files you would like to use - add more files using the + button"))
         tophbox.addLayout(self.__make_file_choose_row(tophbox,RegistrationPage.num_in_rows))
         RegistrationPage.num_in_rows+=1
 
         """ BOTTOM HALF """
-        nameLabel2 = QtGui.QLabel("&Output Directory:")
+        nameLabel2 = QtGui.QLabel("&Output Location:")
+        DescriptionLabel = QtGui.QLabel("Choose where you want the generated graphs to be saved to")
         btn2 = QtGui.QPushButton("Select Directory")
         fileLabel2 = QtGui.QLineEdit("")
         nameLabel2.setBuddy(fileLabel2)
@@ -119,6 +127,7 @@ class RegistrationPage(QtGui.QWizardPage):
         outputHbox.addWidget(btn2)
         outputHbox.addWidget(fileLabel2)
         botvbox.addWidget(nameLabel2)
+        botvbox.addWidget(DescriptionLabel)
         botvbox.addLayout(outputHbox)
 
         mainvbox.addLayout(tophbox)
@@ -137,20 +146,21 @@ class DataPage(QtGui.QWizardPage):
         label = QtGui.QLabel("Output should now be generating!")
         loadBar = QtGui.QProgressBar()
         self.loadBar = loadBar
-        loadBar.setRange(0,100)
+        loadBar.setRange(0,1.0)
         label.setWordWrap(True)
         layout.addWidget(label)
         layout.addWidget(loadBar)
         self.setLayout(layout)
+        self.doneCreatingGraphs = False
 
-    def initializePage(self):
+    def createGraphs(self):
         in_files = list(RegistrationPage.in_files.values())
         in_files = [join(in_files, f) for f in in_files if isfile(f)]
         in_files_type = list(RegistrationPage.in_files_type.values())
         in_files_w_type = zip(in_files,in_files_type)
         print 'INFILES /w types: ', in_files_w_type
         print 'OUTPUT DIR:', self.field('output_dir')
-        totalToProcess = len(in_files_w_type)
+        totalToProcess = len(in_files_w_type)*1.0
         doneProcessing = 0
         for file,filetype in in_files_w_type:
             scriptToCall = getReportToCall(filetype)
@@ -160,10 +170,21 @@ class DataPage(QtGui.QWizardPage):
                 msg.setText("COULDNT FIND SCRIPT FOR REPORT TYPE: {}".format(filetype))
                 msg.setWindowTitle("HEALTHVIZ ERROR")
             STRING_TO_RUN = "python scripts"+os.path.sep+"{} '{}' {}".format(scriptToCall,file,self.field('output_dir'))
-            print STRING_TO_RUN
+            print '({}/{})RUNNING: '.format(doneProcessing,totalToProcess), STRING_TO_RUN
             os.system(STRING_TO_RUN)
             doneProcessing += 1
-            self.loadBar.value =  doneProcessing/totalToProcess
+            self.loadBar.setValue(doneProcessing/totalToProcess)
+            QtGui.QApplication.processEvents()
+        self.doneCreatingGraphs = True  
+
+    def isComplete(self):
+        return self.doneCreatingGraphs 
+
+    def initializePage(self):
+        time.sleep(0.2)
+        self.createGraphs()
+
+
 
 def createConclusionPage():
     page = QtGui.QWizardPage()

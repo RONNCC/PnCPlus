@@ -95,6 +95,8 @@ for department, rows in departments.iteritems():
         fig, ax = plt.subplots()
         datum = data[row]
         title= visits[row]
+        if(title == ""):
+            title = department
         n = appts[row]
         plt.title(title + " (" + n + " appointments)")
         ax.axis('off')
@@ -110,5 +112,7 @@ for department, rows in departments.iteritems():
             ax.pie(bit, labels=labels,
                 colors=tableau20[:len(labels)], autopct='%1.1f%%', 
                 startangle=90)
-        plt.savefig(output_directory + "/" + department + " " + date + '.eps',
+
+        safe_title= re.sub(r'[\/\\:;]', '', title)
+        plt.savefig(output_directory + "/" + safe_title + " " + date + '.eps',
                 bbox_inches='tight')

@@ -58,4 +58,4 @@ def runReport(file_name, output_path):
     
     plt.savefig(output_directory + "/" + title+ " " +
             date + '.eps', bbox_inches='tight')
-    
+    plt.close()

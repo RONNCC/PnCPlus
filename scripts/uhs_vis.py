@@ -61,4 +61,4 @@ def runReport(path, output_path):
     #Make the pie a circle, not an ellipse
     plt.savefig(output_directory + "/" + title+ " " +
             date + '.eps', bbox_inches='tight')
-    
+    plt.close()

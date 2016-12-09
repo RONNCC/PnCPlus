@@ -135,3 +135,4 @@ def runReport(file_name, output_path):
     ax.set_title('Number of appointments per appointment type')
     plt.savefig(output_directory + "/TOTAL" + date + '.eps',
             bbox_inches='tight')
+    plt.close()

@@ -60,7 +60,6 @@ def runReport(input_path, output_path):
         plt.axis("equal")
         plt.savefig(output_directory + "/" + header+ 
                 date + '.pdf', bbox_inches='tight')
-        plt.close()
     
     ax.pie(counts, labels=labels, colors=tableau20[:len(percentages)],
             autopct='%1.1f%%', startangle=90)

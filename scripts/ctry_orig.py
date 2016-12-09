@@ -76,5 +76,5 @@ def runReport(path, output_path):
     plt.xlabel("number of students")
     
     plt.savefig(output_directory + "/" + title+ " " +
-            '.eps', bbox_inches='tight')
+            '.pdf', bbox_inches='tight')
     plt.close()

@@ -118,8 +118,8 @@ def runReport(file_name, output_path):
                     startangle=90)
 
             safe_title= re.sub(r'[\/\\:;]', '', title)
-            plt.savefig(output_directory + "/" + safe_title + " " + date + '.eps',
-                    bbox_inches='tight')
+            plt.savefig(output_directory + "/" + safe_title + " " + date +
+                    '.pdf', bbox_inches='tight')
             #Closing figure to save memory
             plt.close()
     fig = plt.figure()
@@ -133,6 +133,6 @@ def runReport(file_name, output_path):
     ax.set_yticklabels(all_types, fontsize=5)
     ax.set_xlabel('Number of appointments')
     ax.set_title('Number of appointments per appointment type')
-    plt.savefig(output_directory + "/TOTAL" + date + '.eps',
+    plt.savefig(output_directory + "/TOTAL" + date + '.pdf',
             bbox_inches='tight')
     plt.close()

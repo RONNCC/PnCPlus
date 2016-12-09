@@ -59,7 +59,7 @@ def runReport(input_path, output_path):
         #Make the pie a circle, not an ellipse
         plt.axis("equal")
         plt.savefig(output_directory + "/" + header+ 
-                date + '.eps', bbox_inches='tight')
+                date + '.pdf', bbox_inches='tight')
         plt.close()
     
     ax.pie(counts, labels=labels, colors=tableau20[:len(percentages)],
@@ -67,7 +67,7 @@ def runReport(input_path, output_path):
     #Make the pie a circle, not an ellipse
     plt.axis("equal")
     plt.savefig(output_directory + "/" + header+ 
-            date + '.eps', bbox_inches='tight')
+            date + '.pdf', bbox_inches='tight')
     #You need to close after you are done with a figure so that the computer
     #know not to keep track of the current figure anymore. Not doing so will
     #make the computer use up its memory

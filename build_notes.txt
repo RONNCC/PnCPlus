@@ -1,0 +1,19 @@
+Step 1: Download git repository (you can get it as a zip and unzip it). Make
+sure to have the directories not be "\SandBox\PnCPlus-master\PnCPlus-master".
+Get rid of the redundant directory.
+Step 2: Open the win_build.PS1 and open all the Invoke webrequest links in a
+browser to download python and pip.
+Step 3: Replace C:\Users\shomirog with the correct prefix path of your
+computer.
+Step 4: Call command "msiexec \a python-2.7....\SandBox\python27\" (without
+quotes. It's in the win_build file"
+Step 5: From within the SandBox directory, using the python version that you
+just installed (into the SandBox directory) call ".\python27\python.exe
+.\get-pip.py"
+
+NOTE: PyInstaller version >=3.3 is needed because it breaks otherwise 
+
+Step 6: After downloading Pyinstaller version 3.3, find develop.zip in python27
+directory and extract the contents anywhere that you can keep track of it (we
+put it in the SandBox directory).
+Step 6:

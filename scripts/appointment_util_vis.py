@@ -39,6 +39,7 @@ def runReport(input_path, output_path):
         r, g, b = tableau20[i]    
         tableau20[i] = (r / 255., g / 255., b / 255.)
     
+    #skip the first column because it's just filled with categories
     for i in xrange(1, len(headers), 2):
         fig = plt.figure()
         ax = fig.gca()
@@ -60,14 +61,7 @@ def runReport(input_path, output_path):
         plt.axis("equal")
         plt.savefig(output_directory + "/" + header+ 
                 date + '.pdf', bbox_inches='tight')
-    
-    ax.pie(counts, labels=labels, colors=tableau20[:len(percentages)],
-            autopct='%1.1f%%', startangle=90)
-    #Make the pie a circle, not an ellipse
-    plt.axis("equal")
-    plt.savefig(output_directory + "/" + header+ 
-            date + '.pdf', bbox_inches='tight')
-    #You need to close after you are done with a figure so that the computer
-    #know not to keep track of the current figure anymore. Not doing so will
-    #make the computer use up its memory
-    plt.close()
+        #You need to close after you are done with a figure so that the computer
+        #know not to keep track of the current figure anymore. Not doing so will
+        #make the computer use up its memory
+        plt.close()
